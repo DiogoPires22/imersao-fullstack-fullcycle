@@ -3,6 +3,8 @@ package model_test
 import (
 	"testing"
 
+	"github.com/DiogoPires22/imersao-go/tests/factory"
+
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/DiogoPires22/imersao-go/domain/model"
@@ -10,23 +12,13 @@ import (
 )
 
 func TestNewTransaction(t *testing.T) {
-	code := "001"
-	name := "Banco do Brasil"
-	bank, _ := model.NewBank(code, name)
+	bank := factory.ValidBank()
 
-	accountNumber := "abcnumber"
-	ownerName := "Wesley"
-	account, _ := model.NewAccount(bank, accountNumber, ownerName)
+	account := factory.AccountWithBank(bank)
 
-	accountNumberDestination := "abcdestination"
-	ownerName = "Mariana"
-	accountDestination, _ := model.NewAccount(bank, accountNumberDestination, ownerName)
+	pixKey := factory.PixKeyEmailInactive()
 
-	kind := "email"
-	key := "j@j.com"
-	pixKey, _ := model.NewPixKey(accountDestination, kind, key)
-
-	require.NotEqual(t, account.ID, accountDestination.ID)
+	require.NotEqual(t, account.ID, pixKey.Account.ID)
 
 	amount := 3.10
 	statusTransaction := "pending"
@@ -39,7 +31,7 @@ func TestNewTransaction(t *testing.T) {
 	require.Equal(t, transaction.Description, "My description")
 	require.Empty(t, transaction.CancelDescription)
 
-	pixKeySameAccount, err := model.NewPixKey(account, kind, key)
+	pixKeySameAccount := factory.PixKeyWithAccount(account)
 
 	_, err = model.NewTransaction(account, amount, pixKeySameAccount, "My description")
 	require.NotNil(t, err)
@@ -50,29 +42,12 @@ func TestNewTransaction(t *testing.T) {
 }
 
 func TestModel_ChangeStatusOfATransaction(t *testing.T) {
-	code := "001"
-	name := "Banco do Brasil"
-	bank, _ := model.NewBank(code, name)
+	transaction := factory.ValidTransaction()
 
-	accountNumber := "abcnumber"
-	ownerName := "Wesley"
-	account, _ := model.NewAccount(bank, accountNumber, ownerName)
-
-	accountNumberDestination := "abcdestination"
-	ownerName = "Mariana"
-	accountDestination, _ := model.NewAccount(bank, accountNumberDestination, ownerName)
-
-	kind := "email"
-	key := "j@j.com"
-	pixKey, _ := model.NewPixKey(accountDestination, kind, key)
-
-	amount := 3.10
-	transaction, _ := model.NewTransaction(account, amount, pixKey, "My description")
-
-	transaction.Complete()
+	_ = transaction.Complete()
 	require.Equal(t, transaction.Status, model.TransactionCompleted)
 
-	transaction.Cancel("Error")
+	_ = transaction.Cancel("Error")
 	require.Equal(t, transaction.Status, model.TransactionCancelled)
 	require.Equal(t, transaction.CancelDescription, "Error")
 
