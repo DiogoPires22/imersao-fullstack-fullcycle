@@ -9,7 +9,7 @@ import (
 )
 
 type PixKeyRepositoryInterface interface {
-	Register(pixKey *PixKey) (*PixKey, error)
+	Register(pixKey *PixKey) (error)
 	Save(pixKey *PixKey) error
 	FindKeyByKind(key string, kind string) (*PixKey, error)
 }
