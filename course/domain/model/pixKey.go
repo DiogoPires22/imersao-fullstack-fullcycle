@@ -8,6 +8,14 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+
+const(
+	KIND_EMAIL = "email"
+	KIND_CPF = "cpf"
+	KEY_ACTIVE = "active"
+	KEY_INACTIVE = "inactive"
+)
+
 type PixKeyRepositoryInterface interface {
 	Register(pixKey *PixKey) (error)
 	Save(pixKey *PixKey) error
@@ -26,11 +34,11 @@ type PixKey struct {
 func (pixKey *PixKey) isValid() error {
 	_, err := govalidator.ValidateStruct(pixKey)
 
-	if pixKey.Kind != "email" && pixKey.Kind != "cpf" {
+	if pixKey.Kind != KIND_EMAIL && pixKey.Kind != KIND_CPF {
 		return errors.New("invalid type of key")
 	}
 
-	if pixKey.Status != "active" && pixKey.Status != "inactive" {
+	if pixKey.Status != KEY_ACTIVE && pixKey.Status != KEY_INACTIVE {
 		return errors.New("invalid status")
 	}
 
