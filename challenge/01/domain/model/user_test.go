@@ -3,9 +3,8 @@ package model_test
 import (
 	"testing"
 
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/DiogoPires22/imersao-go/domain/model"
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/require"
 )
 
