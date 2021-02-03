@@ -26,7 +26,7 @@ func (usecase *PixUseCase) RegisterKey(key string, kind string, accountID string
 		return nil, err
 	}
 
-	usecase.PixKeyRepository.Register(pixKey)
+	_ = usecase.PixKeyRepository.Register(pixKey)
 
 	if pixKey.ID == "" {
 		return nil, errors.New("unable to create a PixKey")
